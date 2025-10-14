@@ -9,7 +9,7 @@
       "version": "14.1.1",
       "description": "ripgrep recursively searches directories for a regex pattern while respecting your gitignore.",
       "build": 1,
-      "enabled": false,
+      "enabled": true,
       "binaries": ["rg"],
       "build_config": {
         "features": ["pcre2"]
@@ -22,7 +22,7 @@
       "version": "25.5.31",
       "description": "Blazing fast terminal file manager written in Rust, based on async I/O.",
       "build": 1,
-      "enabled": false,
+      "enabled": true,
       "binaries": ["yazi"]
     },
     {
