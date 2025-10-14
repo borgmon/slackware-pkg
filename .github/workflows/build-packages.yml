@@ -135,15 +135,18 @@ jobs:
           chmod +x buildlist.sh
           ./buildlist.sh ./slackware64-current
 
+          # Move generated files into slackware64-current directory
+          mv FILE_LIST slackware64-current/
+          mv CHECKSUMS.md5 slackware64-current/
+
       - name: Commit and push to build branch
         run: |
           # Configure git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Add all changes (FILE_LIST and CHECKSUMS.md5 are in root, packages in slackware64-current/)
+          # Add all changes (FILE_LIST and CHECKSUMS.md5 are now inside slackware64-current/)
           git add slackware64-current/
-          git add FILE_LIST CHECKSUMS.md5 2>/dev/null || true
 
           # Commit with summary
           if git diff --cached --quiet; then
