@@ -2,8 +2,8 @@
 bd175c84e61ce0bc7e35aafee1c54142  ./zoxide/zoxide-0.9.8-x86_64-1.tgz
 510939ce839e5130dd1284e7cb0c87fc  ./fd/fd-10.3.0-x86_64-1.tgz
 18b74cf587c10c008bbee49b495daca1  ./lsd/lsd-1.2.0-x86_64-1.tgz
-401225eb7ce9b07ddabf3d03fb779013  ./FILE_LIST
-a2a1aa88772074bad5172f66d935e4f2  ./CHECKSUMS.md5
+42e6fac235491c03fd2c09f868eb3674  ./FILE_LIST
+124d10bfbb6a3dcc1e16b2162409f386  ./CHECKSUMS.md5
 f6565614475ceafe8d0b2632ad331235  ./yazi/yazi-25.5.31-x86_64-1.tgz
 51e19f18fec4300ba31ef822fc9c67bd  ./buildlist.sh
 59fc401450f41024b70f67506e099b40  ./ripgrep/ripgrep-14.1.1-x86_64-1.tgz
