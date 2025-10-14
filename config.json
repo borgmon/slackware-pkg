@@ -34,6 +34,36 @@
       "build": 1,
       "enabled": true,
       "binaries": ["lsd"]
+    },
+    {
+      "name": "fd",
+      "git_url": "https://github.com/sharkdp/fd.git",
+      "branch": "v10.3.0",
+      "version": "10.3.0",
+      "description": "A simple, fast and user-friendly alternative to 'find'.",
+      "build": 1,
+      "enabled": true,
+      "binaries": ["fd"]
+    },
+    {
+      "name": "zoxide",
+      "git_url": "https://github.com/ajeetdsouza/zoxide.git",
+      "branch": "v0.9.8",
+      "version": "0.9.8",
+      "description": "A smarter cd command. Supports all major shells.",
+      "build": 1,
+      "enabled": true,
+      "binaries": ["zoxide"]
+    },
+    {
+      "name": "resvg",
+      "git_url": "https://github.com/linebender/resvg.git",
+      "branch": "v0.45.1",
+      "version": "0.45.1",
+      "description": "An SVG rendering library.",
+      "build": 1,
+      "enabled": true,
+      "binaries": ["resvg"]
     }
   ]
 }

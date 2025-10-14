@@ -21,14 +21,14 @@ jobs:
       - name: Parse config.json and create matrix
         id: set-matrix
         run: |
-          # Extract enabled package names from config.json
-          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | .name]' config.json)
+          # Extract enabled packages with version info from config.json
+          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | {name: .name, version: .version, build: .build}]' config.json)
           echo "matrix={\"package\":$PACKAGES}" >> $GITHUB_OUTPUT
           echo "Found packages to build:"
-          echo "$PACKAGES" | jq -r '.[]'
+          echo "$PACKAGES" | jq -r '.[] | "\(.name) v\(.version)-\(.build)"'
 
   build:
-    name: Build ${{ matrix.package }}
+    name: Build ${{ matrix.package.name }}
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
@@ -41,43 +41,67 @@ jobs:
         with:
           ref: main
 
+      - name: Check if version already built
+        id: check-existing
+        run: |
+          # Fetch the build branch to check for existing packages
+          git fetch origin build:build 2>/dev/null || echo "Build branch does not exist yet"
+
+          # Check if the package file already exists in the build branch
+          PACKAGE_FILE="${{ matrix.package.name }}-${{ matrix.package.version }}-x86_64-${{ matrix.package.build }}.tgz"
+
+          if git ls-tree -r build --name-only 2>/dev/null | grep -q "slackware64-current/${{ matrix.package.name }}/$PACKAGE_FILE"; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "✓ Package $PACKAGE_FILE already exists in build branch - skipping build"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "→ Package $PACKAGE_FILE not found - will build"
+          fi
+
       - name: Set up Python
+        if: steps.check-existing.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install Rust toolchain
+        if: steps.check-existing.outputs.skip != 'true'
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build package
+        if: steps.check-existing.outputs.skip != 'true'
         run: |
-          python main.py --config config.json --package "${{ matrix.package }}" --output ./
+          python main.py --config config.json --package "${{ matrix.package.name }}" --output ./
 
       - name: Verify build output
+        if: steps.check-existing.outputs.skip != 'true'
         run: |
           echo "Build output:"
-          ls -lR slackware64-current/${{ matrix.package }}/
+          ls -lR slackware64-current/${{ matrix.package.name }}/
 
       - name: Checkout build branch
+        if: steps.check-existing.outputs.skip != 'true'
         run: |
           # Fetch build branch or create it
           git fetch origin build:build 2>/dev/null || git checkout -b build
           git checkout build
 
           # Ensure directory exists
-          mkdir -p slackware64-current/${{ matrix.package }}
+          mkdir -p slackware64-current/${{ matrix.package.name }}
 
       - name: Commit package to build branch
+        if: steps.check-existing.outputs.skip != 'true'
         run: |
           # Configure git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # Add and commit the package
-          git add slackware64-current/${{ matrix.package }}/
-          git commit -m "Build ${{ matrix.package }} from ${{ github.sha }}" || echo "No changes to commit"
+          git add slackware64-current/${{ matrix.package.name }}/
+          git commit -m "Build ${{ matrix.package.name }} v${{ matrix.package.version }}-${{ matrix.package.build }} from ${{ github.sha }}" || echo "No changes to commit"
 
       - name: Push to build branch
+        if: steps.check-existing.outputs.skip != 'true'
         run: |
           git push origin build
         env:
