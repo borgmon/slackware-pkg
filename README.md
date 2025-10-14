@@ -12,6 +12,22 @@ A Python tool to build packages from source into Slackware package format (.tgz)
 - Enable/disable individual packages
 - Modular architecture for easy extensibility
 
+## Automated Builds with GitHub Actions
+
+This project uses GitHub Actions to automatically build packages on every push to the `main` branch. The workflow:
+
+1. **Prepares build matrix** - Parses `config.json` and identifies all enabled packages
+2. **Builds packages in parallel** - Each package is built in a separate job
+   - Skips packages that are already built (checks version in build branch)
+   - Uploads built packages as artifacts
+3. **Summary step** - After all builds complete:
+   - Downloads all package artifacts
+   - Copies packages to `slackware64-current/` directory structure
+   - Runs `buildlist.sh` to generate `FILE_LIST` and `CHECKSUMS.md5`
+   - Commits everything to the `build` branch
+
+All built packages are available in the `build` branch under `slackware64-current/<package-name>/`.
+
 ## Usage(un-get)
 
 ### Quick
