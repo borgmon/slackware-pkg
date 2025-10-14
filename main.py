@@ -52,6 +52,7 @@ class Package:
     description: str
     build: int = 1
     enabled: bool = True
+    release: bool = False
     binaries: List[str] = None
     build_config: BuildConfig = None
 
@@ -78,6 +79,7 @@ class Package:
             description=data.get("description", ""),
             build=data.get("build", 1),
             enabled=data.get("enabled", True),
+            release=data.get("release", False),
             binaries=data.get("binaries"),
             build_config=build_config,
         )
@@ -164,6 +166,63 @@ class GitRepository:
 
         except subprocess.CalledProcessError as e:
             print(f"✗ Error cloning repository: {e}")
+            return None
+
+
+# ============================================================================
+# Release Downloader
+# ============================================================================
+
+
+class ReleaseDownloader:
+    """Handles downloading official release packages"""
+
+    @staticmethod
+    def construct_release_url(pkg: Package) -> str:
+        """Construct the release URL from git_url, branch, and name"""
+        # Extract owner and repo from git_url
+        # Example: https://github.com/zyedidia/micro.git -> zyedidia/micro
+        git_url = pkg.git_url.rstrip("/")
+        if git_url.endswith(".git"):
+            git_url = git_url[:-4]
+
+        # Construct download URL
+        # Format: https://github.com/{owner}/{repo}/releases/download/{version}/{name}-{version}-linux64.tgz
+        release_url = f"{git_url}/releases/download/{pkg.branch}/{pkg.name}-{pkg.version}-linux64.tgz"
+        return release_url
+
+    @staticmethod
+    def download_release(
+        pkg: Package, output_dir: Path, arch: str = "x86_64"
+    ) -> Optional[Path]:
+        """Download the official release package directly to output directory"""
+        release_url = ReleaseDownloader.construct_release_url(pkg)
+
+        # Create output filename in Slackware format
+        pkg_filename = f"{pkg.name}-{pkg.version}-{arch}-{pkg.build}.tgz"
+        output_file = output_dir / pkg_filename
+
+        print(f"  → Downloading from {release_url}")
+
+        try:
+            # Download using curl
+            subprocess.run(
+                [
+                    "curl",
+                    "-L",  # Follow redirects
+                    "-o",
+                    str(output_file),
+                    release_url,
+                ],
+                check=True,
+                capture_output=True,
+            )
+
+            print(f"  ✓ Package downloaded: {output_file}")
+            return output_file
+
+        except subprocess.CalledProcessError as e:
+            print(f"✗ Error downloading release: {e}")
             return None
 
 
@@ -436,6 +495,27 @@ class SlackwarePackageBuilder:
         # Create output directory following un-get format
         output_dir = self.build_root / "slackware64-current" / name
         output_dir.mkdir(parents=True, exist_ok=True)
+
+        # Check if this is a release package (download directly)
+        if pkg.release:
+            print(f"  → Package has official release - downloading directly")
+
+            try:
+                # Download the release directly to output directory
+                pkg_file = ReleaseDownloader.download_release(pkg, output_dir)
+                if not pkg_file:
+                    print(f"✗ Failed to download release for {name}\n")
+                    return False
+
+                print(f"✓ Successfully downloaded {name}")
+                return True
+
+            except Exception as e:
+                print(f"✗ Error during download: {e}")
+                return False
+
+        # Build from source (existing behavior)
+        print(f"  → Building from source")
 
         # Create temporary working directory
         temp_dir = self.tmp_root / f"{name}-build"

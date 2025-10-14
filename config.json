@@ -9,11 +9,9 @@
       "version": "14.1.1",
       "description": "ripgrep recursively searches directories for a regex pattern while respecting your gitignore.",
       "build": 1,
-      "enabled": true,
-      "binaries": ["rg"],
-      "build_config": {
-        "features": ["pcre2"]
-      }
+      "enabled": false,
+      "build_command": "cargo build --release --features pcre2",
+      "bin_path": "target/release/rg"
     },
     {
       "name": "yazi",
@@ -22,8 +20,9 @@
       "version": "25.5.31",
       "description": "Blazing fast terminal file manager written in Rust, based on async I/O.",
       "build": 1,
-      "enabled": true,
-      "binaries": ["yazi"]
+      "enabled": false,
+      "build_command": "cargo build --release",
+      "bin_path": "target/release/yazi"
     },
     {
       "name": "lsd",
@@ -32,8 +31,9 @@
       "version": "1.2.0",
       "description": "The next gen ls command.",
       "build": 1,
-      "enabled": true,
-      "binaries": ["lsd"]
+      "enabled": false,
+      "build_command": "cargo build --release",
+      "bin_path": "target/release/lsd"
     },
     {
       "name": "fd",
@@ -42,8 +42,9 @@
       "version": "10.3.0",
       "description": "A simple, fast and user-friendly alternative to 'find'.",
       "build": 1,
-      "enabled": true,
-      "binaries": ["fd"]
+      "enabled": false,
+      "build_command": "cargo build --release",
+      "bin_path": "target/release/fd"
     },
     {
       "name": "zoxide",
@@ -52,8 +53,9 @@
       "version": "0.9.8",
       "description": "A smarter cd command. Supports all major shells.",
       "build": 1,
-      "enabled": true,
-      "binaries": ["zoxide"]
+      "enabled": false,
+      "build_command": "cargo build --release",
+      "bin_path": "target/release/zoxide"
     },
     {
       "name": "resvg",
@@ -62,8 +64,19 @@
       "version": "0.45.1",
       "description": "An SVG rendering library.",
       "build": 1,
+      "enabled": false,
+      "build_command": "cargo build --release",
+      "bin_path": "target/release/resvg"
+    },
+    {
+      "name": "micro",
+      "git_url": "https://github.com/zyedidia/micro.git",
+      "branch": "v2.0.14",
+      "version": "2.0.14",
+      "description": "A modern and intuitive terminal-based text editor.",
+      "build": 1,
       "enabled": true,
-      "binaries": ["resvg"]
+      "release": true
     }
   ]
 }
