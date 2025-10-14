@@ -13,7 +13,7 @@ class Builder(ABC):
     """Abstract base class for package builders"""
 
     @abstractmethod
-    def can_build(self, repo_path: Path) -> bool:
+    def can_build(self, pkg: Package, repo_path: Path) -> bool:
         """Check if this builder can handle the package"""
         pass
 
@@ -23,68 +23,47 @@ class Builder(ABC):
         pass
 
 
-class RustBuilder(Builder):
-    """Builds Rust packages using Cargo"""
+class GenericBuilder(Builder):
+    """Generic builder that uses build_command from config"""
 
-    def can_build(self, repo_path: Path) -> bool:
-        """Check if this is a Rust project"""
-        return (repo_path / "Cargo.toml").exists()
+    def can_build(self, pkg: Package, repo_path: Path) -> bool:
+        """Check if package has a build_command specified"""
+        return pkg.build_command is not None
 
     def build(self, pkg: Package, repo_path: Path, install_dir: Path) -> bool:
-        """Build a Rust package using cargo"""
+        """Build a package using the configured build_command"""
         name = pkg.name
-        print(f"  → Building {name} with Cargo...")
+        build_env = pkg.build_env or "unknown"
+        print(f"  → Building {name} with {build_env}...")
 
-        # Get build configuration
-        build_config = pkg.build_config
+        # Get build command from config
+        build_command = pkg.build_command
+        if not build_command:
+            print(f"✗ No build_command specified for {name}")
+            return False
 
-        # Build cargo command
-        cargo_cmd = ["cargo", "build", "--release"]
-
-        # Add custom features if specified
-        if build_config.features:
-            features_str = ",".join(build_config.features)
-            cargo_cmd.extend(["--features", features_str])
-            print(f"    → Enabling features: {features_str}")
-
-        # Add custom target if specified
-        target = build_config.target
-        if target:
-            cargo_cmd.extend(["--target", target])
-            print(f"    → Building for target: {target}")
-
-        # Add any additional cargo flags
-        if build_config.cargo_flags:
-            cargo_cmd.extend(build_config.cargo_flags)
-
-        # Set environment variables if specified
-        env = os.environ.copy()
-        if build_config.env:
-            env.update(build_config.env)
-            print(
-                f"    → Setting environment variables: {', '.join(build_config.env.keys())}"
-            )
-
-        # Build with cargo
-        print(f"    → Running: {' '.join(cargo_cmd)}")
+        # Execute build command
+        print(f"    → Running: {build_command}")
         result = subprocess.run(
-            cargo_cmd,
+            build_command,
+            shell=True,
             cwd=repo_path,
             capture_output=True,
             text=True,
-            env=env,
         )
 
         if result.returncode != 0:
-            print(f"✗ Cargo build failed:")
+            print(f"✗ Build failed:")
             print(result.stderr)
             return False
 
+        print(f"    ✓ Build completed successfully")
+
         # Install to staging directory
-        return self._install_artifacts(pkg, repo_path, install_dir, target)
+        return self._install_artifacts(pkg, repo_path, install_dir)
 
     def _install_artifacts(
-        self, pkg: Package, repo_path: Path, install_dir: Path, target: str = None
+        self, pkg: Package, repo_path: Path, install_dir: Path
     ) -> bool:
         """Install build artifacts to staging directory"""
         print(f"    → Installing to staging directory...")
@@ -95,27 +74,21 @@ class RustBuilder(Builder):
         bin_dir.mkdir(parents=True, exist_ok=True)
         doc_dir.mkdir(parents=True, exist_ok=True)
 
-        # Determine release directory based on target
-        if target:
-            release_dir = repo_path / "target" / target / "release"
-        else:
-            release_dir = repo_path / "target" / "release"
-
-        # Copy binaries
-        binaries_installed = False
-        for binary_name in pkg.binaries:
-            binary_src = release_dir / binary_name
-            if binary_src.exists() and binary_src.is_file():
-                shutil.copy2(binary_src, bin_dir / binary_name)
-                os.chmod(bin_dir / binary_name, 0o755)
-                print(f"    ✓ Installed binary: {binary_name}")
-                binaries_installed = True
-            else:
-                print(f"    ⚠ Binary not found: {binary_name}")
-
-        if not binaries_installed:
-            print(f"✗ No binaries found in {release_dir}")
+        # bin_path is required - it tells us exactly where the binary is
+        if not pkg.bin_path:
+            print(f"✗ bin_path not specified in config for {pkg.name}")
             return False
+
+        binary_src = repo_path / pkg.bin_path
+        if not binary_src.exists() or not binary_src.is_file():
+            print(f"✗ Binary not found at specified path: {pkg.bin_path}")
+            return False
+
+        # Use the package name as the installed binary name
+        binary_name = pkg.name
+        shutil.copy2(binary_src, bin_dir / binary_name)
+        os.chmod(bin_dir / binary_name, 0o755)
+        print(f"    ✓ Installed binary: {binary_name} (from {pkg.bin_path})")
 
         # Copy documentation
         for doc_file in ["README.md", "LICENSE", "CHANGELOG.md"]:

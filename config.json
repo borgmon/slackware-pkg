@@ -9,7 +9,8 @@
       "version": "14.1.1",
       "description": "ripgrep recursively searches directories for a regex pattern while respecting your gitignore.",
       "build": 1,
-      "enabled": false,
+      "enabled": true,
+      "build_env": "rust",
       "build_command": "cargo build --release --features pcre2",
       "bin_path": "target/release/rg"
     },
@@ -20,7 +21,8 @@
       "version": "25.5.31",
       "description": "Blazing fast terminal file manager written in Rust, based on async I/O.",
       "build": 1,
-      "enabled": false,
+      "enabled": true,
+      "build_env": "rust",
       "build_command": "cargo build --release",
       "bin_path": "target/release/yazi"
     },
@@ -31,7 +33,8 @@
       "version": "1.2.0",
       "description": "The next gen ls command.",
       "build": 1,
-      "enabled": false,
+      "enabled": true,
+      "build_env": "rust",
       "build_command": "cargo build --release",
       "bin_path": "target/release/lsd"
     },
@@ -42,7 +45,8 @@
       "version": "10.3.0",
       "description": "A simple, fast and user-friendly alternative to 'find'.",
       "build": 1,
-      "enabled": false,
+      "enabled": true,
+      "build_env": "rust",
       "build_command": "cargo build --release",
       "bin_path": "target/release/fd"
     },
@@ -53,7 +57,8 @@
       "version": "0.9.8",
       "description": "A smarter cd command. Supports all major shells.",
       "build": 1,
-      "enabled": false,
+      "enabled": true,
+      "build_env": "rust",
       "build_command": "cargo build --release",
       "bin_path": "target/release/zoxide"
     },
@@ -64,7 +69,8 @@
       "version": "0.45.1",
       "description": "An SVG rendering library.",
       "build": 1,
-      "enabled": false,
+      "enabled": true,
+      "build_env": "rust",
       "build_command": "cargo build --release",
       "bin_path": "target/release/resvg"
     },
@@ -76,7 +82,9 @@
       "description": "A modern and intuitive terminal-based text editor.",
       "build": 1,
       "enabled": true,
-      "release": true
+      "build_env": "go",
+      "build_command": "make build",
+      "bin_path": "micro"
     }
   ]
 }

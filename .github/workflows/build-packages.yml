@@ -22,10 +22,10 @@ jobs:
         id: set-matrix
         run: |
           # Extract enabled packages with version info from config.json
-          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | {name: .name, version: .version, build: .build}]' config.json)
+          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | {name: .name, version: .version, build: .build, build_env: .build_env}]' config.json)
           echo "matrix={\"package\":$PACKAGES}" >> $GITHUB_OUTPUT
           echo "Found packages to build:"
-          echo "$PACKAGES" | jq -r '.[] | "\(.name) v\(.version)-\(.build)"'
+          echo "$PACKAGES" | jq -r '.[] | "\(.name) v\(.version)-\(.build) (\(.build_env))"'
 
   build:
     name: Build ${{ matrix.package.name }}
@@ -65,8 +65,14 @@ jobs:
           enable-cache: true
 
       - name: Install Rust toolchain
-        if: steps.check-existing.outputs.skip != 'true'
+        if: steps.check-existing.outputs.skip != 'true' && matrix.package.build_env == 'rust'
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Go toolchain
+        if: steps.check-existing.outputs.skip != 'true' && matrix.package.build_env == 'go'
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
 
       - name: Build package
         if: steps.check-existing.outputs.skip != 'true'

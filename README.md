@@ -5,12 +5,12 @@ A Python tool to build packages from source into Slackware package format (.tgz)
 ## Features
 
 - Build packages from Git repositories
-- Support for Rust/Cargo-based projects
-- Configurable build options
+- Generic build system support (Rust, Go, Make, etc.)
+- Configurable build commands via config.json
 - Automatic package versioning
 - Follows Slackware package standards
 - Enable/disable individual packages
-- Modular architecture for easy extensibility
+- Download pre-built releases or build from source
 
 ## Automated Builds with GitHub Actions
 
@@ -54,10 +54,10 @@ slackware-pkg/
 │   └── slackware_pkg/        # Main package directory
 │       ├── __init__.py       # Package exports
 │       ├── main.py           # CLI entry point with argument parsing
-│       ├── models.py         # Data models (Package, BuildConfig)
+│       ├── models.py         # Data models (Package)
 │       ├── config.py         # Configuration loader
 │       ├── git.py            # Git operations
-│       ├── builders.py       # Build system implementations (RustBuilder, etc.)
+│       ├── builders.py       # Build system implementations (GenericBuilder)
 │       ├── packager.py       # Slackware package creation
 │       ├── release.py        # Release downloader for pre-built packages
 │       └── builder.py        # Main orchestrator
@@ -73,7 +73,7 @@ slackware-pkg/
 
 - Python 3.10+
 - Git
-- Cargo/Rust (for Rust projects)
+- Build toolchains as needed (Rust, Go, Make, etc.)
 - Standard build tools (tar, etc.)
 
 ## Installation
@@ -157,13 +157,21 @@ Edit `config.json` to define packages to build:
       "description": "A line-oriented search tool",
       "build": 1,
       "enabled": true,
-      "binaries": ["rg"],
-      "build_config": {
-        "features": ["pcre2"],
-        "target": null,
-        "cargo_flags": [],
-        "env": {}
-      }
+      "build_env": "rust",
+      "build_command": "cargo build --release --features pcre2",
+      "bin_path": "target/release/rg"
+    },
+    {
+      "name": "micro",
+      "git_url": "https://github.com/zyedidia/micro.git",
+      "branch": "v2.0.14",
+      "version": "2.0.14",
+      "description": "A modern text editor",
+      "build": 1,
+      "enabled": true,
+      "build_env": "go",
+      "build_command": "make build",
+      "bin_path": "micro"
     }
   ]
 }
@@ -179,12 +187,9 @@ Edit `config.json` to define packages to build:
 - **build** (optional, default: 1): Build number
 - **enabled** (optional, default: true): Set to `false` to skip building this package
 - **release** (optional, default: false): Set to `true` to download pre-built release instead of building from source
-- **binaries** (optional, default: [name]): List of binary names to install
-- **build_config** (optional): Build-specific configuration (only for building from source)
-  - **features**: Cargo features to enable (list of strings)
-  - **target**: Build target architecture (string or null)
-  - **cargo_flags**: Additional cargo flags (list of strings)
-  - **env**: Environment variables for build (dict)
+- **build_env** (optional): Build environment identifier (e.g., "rust", "go", "python") - used for GitHub Actions toolchain installation
+- **build_command** (optional): Shell command to build the package (required if not using release)
+- **bin_path** (optional): Relative path from repo root to the built binary (required if not using release)
 
 ### Release Downloads
 
@@ -234,25 +239,26 @@ uv run slackware-pkg
 uv run python -m slackware_pkg.main --help
 ```
 
-### Adding New Build Systems
+### Adding New Packages
 
-To add support for new build systems (e.g., Make, CMake, Python setuptools):
+To add a new package, simply add an entry to `config.json`:
 
-1. Create a new builder class in `src/slackware_pkg/builders.py` that inherits from `Builder`
-2. Implement the `can_build()` and `build()` methods
-3. Register the builder in `SlackwarePackageBuilder.__init__()` in `builder.py`
-
-Example:
-
-```python
-class MakeBuilder(Builder):
-    def can_build(self, repo_path: Path) -> bool:
-        return (repo_path / "Makefile").exists()
-
-    def build(self, pkg: Package, repo_path: Path, install_dir: Path) -> bool:
-        # Implementation here
-        pass
+```json
+{
+  "name": "your-package",
+  "git_url": "https://github.com/user/repo.git",
+  "branch": "v1.0.0",
+  "version": "1.0.0",
+  "description": "Package description",
+  "build": 1,
+  "enabled": true,
+  "build_env": "rust",
+  "build_command": "cargo build --release",
+  "bin_path": "target/release/your-package"
+}
 ```
+
+The builder is fully generic and uses the `build_command` you specify. No code changes needed!
 
 ## Docker Development
 

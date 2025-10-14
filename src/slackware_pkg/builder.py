@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 from typing import List
 
-from slackware_pkg.builders import Builder, RustBuilder
+from slackware_pkg.builders import Builder, GenericBuilder
 from slackware_pkg.config import ConfigLoader
 from slackware_pkg.git import GitRepository
 from slackware_pkg.models import Package
@@ -26,8 +26,8 @@ class SlackwarePackageBuilder:
         self.tmp_root = Path(tmp_root)
         self.packages: List[Package] = []
         self.builders: List[Builder] = [
-            RustBuilder()
-        ]  # Add more builders here as needed
+            GenericBuilder()
+        ]  # Generic builder that uses build_command from config
 
         # Create directories if they don't exist
         self.build_root.mkdir(parents=True, exist_ok=True)
@@ -54,7 +54,7 @@ class SlackwarePackageBuilder:
 
         # Find appropriate builder
         for builder in self.builders:
-            if builder.can_build(repo_path):
+            if builder.can_build(pkg, repo_path):
                 return builder.build(pkg, repo_path, install_dir)
 
         print(f"✗ No suitable builder found for {name}")
