@@ -51,19 +51,22 @@ https://raw.githubusercontent.com/borgmon/slackware-pkg/build/slackware64-curren
 ```
 slackware-pkg/
 ├── src/
-│   └── slackware_pkg/
+│   └── slackware_pkg/        # Main package directory
 │       ├── __init__.py       # Package exports
-│       ├── __main__.py       # Entry point
+│       ├── main.py           # CLI entry point with argument parsing
 │       ├── models.py         # Data models (Package, BuildConfig)
 │       ├── config.py         # Configuration loader
 │       ├── git.py            # Git operations
 │       ├── builders.py       # Build system implementations (RustBuilder, etc.)
 │       ├── packager.py       # Slackware package creation
+│       ├── release.py        # Release downloader for pre-built packages
 │       └── builder.py        # Main orchestrator
 ├── config.json               # Package definitions
-├── pyproject.toml           # Project metadata and dependencies
-├── Dockerfile               # Container image definition
-└── README.md                # This file
+├── pyproject.toml            # Project metadata and dependencies
+├── uv.lock                   # uv lockfile
+├── main.py                   # Legacy wrapper (deprecated)
+├── Dockerfile                # Container image definition
+└── README.md                 # This file
 ```
 
 ## Requirements
@@ -85,8 +88,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 git clone <repository-url>
 cd slackware-pkg
 
-# Install the package
-uv pip install -e .
+# Sync dependencies (installs the package automatically)
+uv sync
 ```
 
 ### Using pip
@@ -115,17 +118,27 @@ docker run -v $(pwd)/config.json:/app/config.json \
 
 ```bash
 # Build all enabled packages from config.json
-python main.py
+uv run slackware-pkg
 
 # Build a specific package by name
-python main.py --package lsd
+uv run slackware-pkg --package lsd
 
 # Use a custom config file
-python main.py --config my-config.json --package ripgrep
+uv run slackware-pkg --config my-config.json --package ripgrep
 
-# Customize output directory (default: ./build)
-python main.py --package yazi --output ./
+# Customize output and temp directories
+uv run slackware-pkg --package yazi --output ./build --temp ./tmp
+
+# Show help
+uv run slackware-pkg --help
 ```
+
+### CLI Options
+
+- `--config CONFIG` - Path to config.json file (default: config.json)
+- `--package PACKAGE` - Package name to build (if not specified, builds all enabled packages)
+- `--output OUTPUT` - Output directory for built packages (default: ./build)
+- `--temp TEMP` - Temporary directory for build files (default: ./tmp)
 
 ### Configuration
 
@@ -165,12 +178,32 @@ Edit `config.json` to define packages to build:
 - **description** (required): Package description
 - **build** (optional, default: 1): Build number
 - **enabled** (optional, default: true): Set to `false` to skip building this package
+- **release** (optional, default: false): Set to `true` to download pre-built release instead of building from source
 - **binaries** (optional, default: [name]): List of binary names to install
-- **build_config** (optional): Build-specific configuration
+- **build_config** (optional): Build-specific configuration (only for building from source)
   - **features**: Cargo features to enable (list of strings)
   - **target**: Build target architecture (string or null)
   - **cargo_flags**: Additional cargo flags (list of strings)
   - **env**: Environment variables for build (dict)
+
+### Release Downloads
+
+For packages with official pre-built releases (like `micro`), you can set `"release": true` to download the release directly instead of building from source:
+
+```json
+{
+  "name": "micro",
+  "git_url": "https://github.com/zyedidia/micro.git",
+  "branch": "v2.0.14",
+  "version": "2.0.14",
+  "description": "A modern and intuitive terminal-based text editor.",
+  "build": 1,
+  "enabled": true,
+  "release": true
+}
+```
+
+This will download from: `https://github.com/zyedidia/micro/releases/download/v2.0.14/micro-2.0.14-linux64.tgz`
 
 ## Output Structure
 
@@ -188,14 +221,17 @@ output/slackware64-current/<package-name>/<package-name>-<version>-<arch>-<build
 # Install development dependencies
 uv sync
 
-# Format code
-uv run black src/
-
 # Lint code
 uv run ruff check src/
 
+# Format code (if ruff format is configured)
+uv run ruff format src/
+
 # Run the builder
 uv run slackware-pkg
+
+# Run with Python directly
+uv run python -m slackware_pkg.main --help
 ```
 
 ### Adding New Build Systems

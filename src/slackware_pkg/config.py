@@ -4,7 +4,7 @@ import json
 import sys
 from typing import List
 
-from .models import Package
+from slackware_pkg.models import Package
 
 
 class ConfigLoader:

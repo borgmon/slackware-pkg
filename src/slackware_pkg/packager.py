@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from .models import Package
+from slackware_pkg.models import Package
 
 
 class SlackwarePackager:

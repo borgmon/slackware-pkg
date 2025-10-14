@@ -58,11 +58,11 @@ jobs:
             echo "→ Package $PACKAGE_FILE not found - will build"
           fi
 
-      - name: Set up Python
+      - name: Install uv
         if: steps.check-existing.outputs.skip != 'true'
-        uses: actions/setup-python@v5
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.12"
+          enable-cache: true
 
       - name: Install Rust toolchain
         if: steps.check-existing.outputs.skip != 'true'
@@ -71,7 +71,7 @@ jobs:
       - name: Build package
         if: steps.check-existing.outputs.skip != 'true'
         run: |
-          python main.py --config config.json --package "${{ matrix.package.name }}" --output ./
+          uv run slackware-pkg --config config.json --package "${{ matrix.package.name }}" --output ./
 
       - name: Verify build output
         if: steps.check-existing.outputs.skip != 'true'

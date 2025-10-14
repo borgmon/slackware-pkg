@@ -33,6 +33,7 @@ class Package:
     description: str
     build: int = 1
     enabled: bool = True
+    release: bool = False
     binaries: List[str] = None
     build_config: BuildConfig = None
 
@@ -59,6 +60,7 @@ class Package:
             description=data.get("description", ""),
             build=data.get("build", 1),
             enabled=data.get("enabled", True),
+            release=data.get("release", False),
             binaries=data.get("binaries"),
             build_config=build_config,
         )
