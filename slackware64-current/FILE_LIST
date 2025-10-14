@@ -1,0 +1,13 @@
+drwxr-xr-x  8 runner runner     4096 2025-10-14 03:28 ./slackware64-current
+drwxr-xr-x  2 runner runner     4096 2025-10-14 03:28 ./slackware64-current/fd
+-rw-r--r--  1 runner runner  1675341 2025-10-14 03:28 ./slackware64-current/fd/fd-10.3.0-x86_64-1.tgz
+drwxr-xr-x  2 runner runner     4096 2025-10-14 03:28 ./slackware64-current/lsd
+-rw-r--r--  1 runner runner  1568895 2025-10-14 03:28 ./slackware64-current/lsd/lsd-1.2.0-x86_64-1.tgz
+drwxr-xr-x  2 runner runner     4096 2025-10-14 03:28 ./slackware64-current/resvg
+-rw-r--r--  1 runner runner  1675076 2025-10-14 03:28 ./slackware64-current/resvg/resvg-0.45.1-x86_64-1.tgz
+drwxr-xr-x  2 runner runner     4096 2025-10-14 03:28 ./slackware64-current/ripgrep
+-rw-r--r--  1 runner runner  8084774 2025-10-14 03:28 ./slackware64-current/ripgrep/ripgrep-14.1.1-x86_64-1.tgz
+drwxr-xr-x  2 runner runner     4096 2025-10-14 03:28 ./slackware64-current/yazi
+-rw-r--r--  1 runner runner  7024894 2025-10-14 03:28 ./slackware64-current/yazi/yazi-25.5.31-x86_64-1.tgz
+drwxr-xr-x  2 runner runner     4096 2025-10-14 03:28 ./slackware64-current/zoxide
+-rw-r--r--  1 runner runner   521894 2025-10-14 03:28 ./slackware64-current/zoxide/zoxide-0.9.8-x86_64-1.tgz
