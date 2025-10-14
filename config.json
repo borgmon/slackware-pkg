@@ -85,6 +85,18 @@
       "build_env": "go",
       "build_command": "make build",
       "bin_path": "micro"
+    },
+    {
+      "name": "dust",
+      "git_url": "https://github.com/bootandy/dust.git",
+      "branch": "v1.2.3",
+      "version": "1.2.3",
+      "description": "A more intuitive version of du in rust.",
+      "build": 1,
+      "enabled": true,
+      "build_env": "rust",
+      "build_command": "cargo build --release",
+      "bin_path": "target/release/dust"
     }
   ]
 }
