@@ -1,0 +1,95 @@
+name: Build Slackware Packages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write # Required to push to the build branch
+
+jobs:
+  prepare:
+    name: Prepare build matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Parse config.json and create matrix
+        id: set-matrix
+        run: |
+          # Extract enabled package names from config.json
+          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | .name]' config.json)
+          echo "matrix={\"package\":$PACKAGES}" >> $GITHUB_OUTPUT
+          echo "Found packages to build:"
+          echo "$PACKAGES" | jq -r '.[]'
+
+  build:
+    name: Build ${{ matrix.package }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build package
+        run: |
+          python main.py --config config.json --package "${{ matrix.package }}" --output ./
+
+      - name: Verify build output
+        run: |
+          echo "Build output:"
+          ls -lR slackware64-current/${{ matrix.package }}/
+
+      - name: Checkout build branch
+        run: |
+          # Fetch build branch or create it
+          git fetch origin build:build 2>/dev/null || git checkout -b build
+          git checkout build
+
+          # Ensure directory exists
+          mkdir -p slackware64-current/${{ matrix.package }}
+
+      - name: Commit package to build branch
+        run: |
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Add and commit the package
+          git add slackware64-current/${{ matrix.package }}/
+          git commit -m "Build ${{ matrix.package }} from ${{ github.sha }}" || echo "No changes to commit"
+
+      - name: Push to build branch
+        run: |
+          git push origin build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  summary:
+    name: Build Summary
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check build results
+        run: |
+          echo "Build workflow completed"
+          echo "Check individual job results above"

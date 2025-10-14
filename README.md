@@ -80,11 +80,17 @@ docker run -v $(pwd)/config.json:/app/config.json \
 ### Command Line
 
 ```bash
-# Run the builder directly
-slackware-pkg
+# Build all enabled packages from config.json
+python main.py
 
-# Or use Python module syntax
-python -m slackware_pkg
+# Build a specific package by name
+python main.py --package lsd
+
+# Use a custom config file
+python main.py --config my-config.json --package ripgrep
+
+# Customize output directory (default: ./build)
+python main.py --package yazi --output ./
 ```
 
 ### Configuration
