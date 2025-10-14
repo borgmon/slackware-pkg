@@ -79,33 +79,13 @@ jobs:
           echo "Build output:"
           ls -lR slackware64-current/${{ matrix.package.name }}/
 
-      - name: Checkout build branch
+      - name: Upload package as artifact
         if: steps.check-existing.outputs.skip != 'true'
-        run: |
-          # Fetch build branch or create it
-          git fetch origin build:build 2>/dev/null || git checkout -b build
-          git checkout build
-
-          # Ensure directory exists
-          mkdir -p slackware64-current/${{ matrix.package.name }}
-
-      - name: Commit package to build branch
-        if: steps.check-existing.outputs.skip != 'true'
-        run: |
-          # Configure git
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Add and commit the package
-          git add slackware64-current/${{ matrix.package.name }}/
-          git commit -m "Build ${{ matrix.package.name }} v${{ matrix.package.version }}-${{ matrix.package.build }} from ${{ github.sha }}" || echo "No changes to commit"
-
-      - name: Push to build branch
-        if: steps.check-existing.outputs.skip != 'true'
-        run: |
-          git push origin build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-${{ matrix.package.name }}
+          path: slackware64-current/${{ matrix.package.name }}/
+          retention-days: 1
 
   summary:
     name: Build Summary
@@ -113,7 +93,64 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Check build results
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Checkout build branch
         run: |
-          echo "Build workflow completed"
-          echo "Check individual job results above"
+          # Fetch build branch or create it
+          git fetch origin build:build 2>/dev/null || git checkout --orphan build
+          git checkout build
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+          pattern: package-*
+
+      - name: Copy packages to slackware64-current
+        run: |
+          echo "Copying packages from artifacts..."
+          mkdir -p slackware64-current
+
+          # Copy all packages from artifacts
+          if [ -d artifacts ]; then
+            for pkg_dir in artifacts/package-*; do
+              if [ -d "$pkg_dir" ]; then
+                pkg_name=$(basename "$pkg_dir" | sed 's/^package-//')
+                echo "Copying $pkg_name..."
+                mkdir -p "slackware64-current/$pkg_name"
+                cp -r "$pkg_dir"/* "slackware64-current/$pkg_name/"
+              fi
+            done
+          fi
+
+          echo "Package directory structure:"
+          ls -lR slackware64-current/
+
+      - name: Run buildlist.sh
+        run: |
+          chmod +x buildlist.sh
+          ./buildlist.sh ./slackware64-current
+
+      - name: Commit and push to build branch
+        run: |
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Add all changes (FILE_LIST and CHECKSUMS.md5 are in root, packages in slackware64-current/)
+          git add slackware64-current/
+          git add FILE_LIST CHECKSUMS.md5 2>/dev/null || true
+
+          # Commit with summary
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update packages from ${{ github.sha }}"
+            git push origin build
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

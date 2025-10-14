@@ -12,6 +12,24 @@ A Python tool to build packages from source into Slackware package format (.tgz)
 - Enable/disable individual packages
 - Modular architecture for easy extensibility
 
+## Usage(un-get)
+
+### Quick
+
+Copy this to your console:
+
+```sh
+echo "https://raw.githubusercontent.com/borgmon/slackware-pkg/build/slackware64-current/ borgmon" >> /boot/config/plugins/un-get/sources.list
+```
+
+### Manual
+
+Add this to your `/boot/config/plugins/un-get/sources.list`
+
+```
+https://raw.githubusercontent.com/borgmon/slackware-pkg/build/slackware64-current/ borgmon
+```
+
 ## Project Structure
 
 ```
@@ -141,6 +159,7 @@ Edit `config.json` to define packages to build:
 ## Output Structure
 
 Packages are saved to:
+
 ```
 output/slackware64-current/<package-name>/<package-name>-<version>-<arch>-<build>.tgz
 ```
@@ -177,7 +196,7 @@ Example:
 class MakeBuilder(Builder):
     def can_build(self, repo_path: Path) -> bool:
         return (repo_path / "Makefile").exists()
-    
+
     def build(self, pkg: Package, repo_path: Path, install_dir: Path) -> bool:
         # Implementation here
         pass
