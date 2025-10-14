@@ -1,8 +1,9 @@
+6cfb2c31f0bbd3ac89d8145cd827470b  ./micro/micro-2.0.14-x86_64-1.tgz
 bd175c84e61ce0bc7e35aafee1c54142  ./zoxide/zoxide-0.9.8-x86_64-1.tgz
 510939ce839e5130dd1284e7cb0c87fc  ./fd/fd-10.3.0-x86_64-1.tgz
 18b74cf587c10c008bbee49b495daca1  ./lsd/lsd-1.2.0-x86_64-1.tgz
-9b419c08bb8969502ed84a62c80343a8  ./FILE_LIST
-72388cc3018745c794a622c000958ed4  ./CHECKSUMS.md5
+401225eb7ce9b07ddabf3d03fb779013  ./FILE_LIST
+a2a1aa88772074bad5172f66d935e4f2  ./CHECKSUMS.md5
 f6565614475ceafe8d0b2632ad331235  ./yazi/yazi-25.5.31-x86_64-1.tgz
 51e19f18fec4300ba31ef822fc9c67bd  ./buildlist.sh
 59fc401450f41024b70f67506e099b40  ./ripgrep/ripgrep-14.1.1-x86_64-1.tgz
