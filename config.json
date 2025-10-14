@@ -1,0 +1,39 @@
+{
+  "output_path": "./build",
+  "temp_path": "./tmp",
+  "packages": [
+    {
+      "name": "ripgrep",
+      "git_url": "https://github.com/BurntSushi/ripgrep.git",
+      "branch": "14.1.1",
+      "version": "14.1.1",
+      "description": "ripgrep recursively searches directories for a regex pattern while respecting your gitignore.",
+      "build": 1,
+      "enabled": false,
+      "binaries": ["rg"],
+      "build_config": {
+        "features": ["pcre2"]
+      }
+    },
+    {
+      "name": "yazi",
+      "git_url": "https://github.com/sxyazi/yazi.git",
+      "branch": "v25.5.31",
+      "version": "25.5.31",
+      "description": "Blazing fast terminal file manager written in Rust, based on async I/O.",
+      "build": 1,
+      "enabled": false,
+      "binaries": ["yazi"]
+    },
+    {
+      "name": "lsd",
+      "git_url": "https://github.com/lsd-rs/lsd.git",
+      "branch": "v1.2.0",
+      "version": "1.2.0",
+      "description": "The next gen ls command.",
+      "build": 1,
+      "enabled": true,
+      "binaries": ["lsd"]
+    }
+  ]
+}

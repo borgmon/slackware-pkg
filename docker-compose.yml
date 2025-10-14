@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  slackware-builder:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+    container_name: slackware-pkg-builder
+    volumes:
+      # Mount the build output directory to host
+      - ./build:/app/build
+      # Mount config.json to allow easy editing
+      - ./config.json:/app/config.json:ro
+      # Mount tmp directory for repo clones and build temporary files
+      - ./tmp:/app/tmp
+    environment:
+      - RUST_BACKTRACE=1
+    working_dir: /app
