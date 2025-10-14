@@ -132,12 +132,13 @@ jobs:
 
       - name: Run buildlist.sh
         run: |
-          chmod +x buildlist.sh
-          ./buildlist.sh ./slackware64-current
+          # Copy buildlist.sh to slackware64-current directory
+          cp buildlist.sh slackware64-current/
 
-          # Move generated files into slackware64-current directory
-          mv FILE_LIST slackware64-current/
-          mv CHECKSUMS.md5 slackware64-current/
+          # Run buildlist.sh from within slackware64-current
+          cd slackware64-current
+          chmod +x buildlist.sh
+          ./buildlist.sh .
 
       - name: Commit and push to build branch
         run: |
