@@ -18,11 +18,11 @@ WORKDIR /app
 # Copy project files for dependency installation
 COPY pyproject.toml uv.lock* ./
 
-# Install Python dependencies using uv
-RUN uv sync --frozen
-
 # Copy the entire project
 COPY . .
+
+# Install Python dependencies using uv
+RUN uv sync --frozen
 
 # Install the package in editable mode for development
 RUN uv pip install -e .

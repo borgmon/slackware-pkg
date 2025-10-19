@@ -97,6 +97,18 @@
       "build_env": "rust",
       "build_command": "cargo build --release",
       "bin_path": "target/release/dust"
+    },
+    {
+      "name": "starship",
+      "git_url": "https://github.com/starship/starship.git",
+      "branch": "v1.23.0",
+      "version": "1.23.0",
+      "description": "The minimal, blazing-fast, and infinitely customizable prompt for any shell! ",
+      "build": 1,
+      "enabled": true,
+      "build_env": "rust",
+      "build_command": "cargo build --release",
+      "bin_path": "target/release/starship"
     }
   ]
 }
