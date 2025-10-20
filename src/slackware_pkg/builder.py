@@ -141,25 +141,25 @@ class SlackwarePackageBuilder:
             print("No packages to build")
             return
 
-        # Filter enabled packages
-        enabled_packages = [pkg for pkg in self.packages if pkg.enabled]
+        # Check for 'only' flag
+        only_packages = [pkg for pkg in self.packages if pkg.only]
+        if only_packages:
+            build_list = [pkg for pkg in only_packages if pkg.enabled]
+            print(f"\n{'=' * 60}")
+            print(
+                f"Building {len(build_list)} 'only' package(s) (out of {len(self.packages)} total)"
+            )
+            print(f"{'=' * 60}\n")
+        else:
+            build_list = [pkg for pkg in self.packages if pkg.enabled]
+            print(f"\n{'=' * 60}")
+            print(
+                f"Building {len(build_list)} package(s) (out of {len(self.packages)} total)"
+            )
+            print(f"{'=' * 60}\n")
 
-        print(f"\n{'=' * 60}")
-        print(
-            f"Building {len(enabled_packages)} package(s) (out of {len(self.packages)} total)"
-        )
-        print(f"{'=' * 60}\n")
-
-        for pkg in self.packages:
+        for pkg in build_list:
             name = pkg.name
-
-            # Skip disabled packages
-            if not pkg.enabled:
-                print(f"\n[{name}]")
-                print(f"{'─' * 60}")
-                print(f"⊘ Package disabled - skipping build\n")
-                continue
-
             # Use the single package build method
             self.build_single_package_direct(pkg)
 

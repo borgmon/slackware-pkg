@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     build-essential \
     tar \
+    golang-go \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Rust toolchain (required for building ripgrep and other Rust packages)

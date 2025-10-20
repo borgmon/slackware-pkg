@@ -19,6 +19,7 @@ class Package:
     build_env: Optional[str] = None
     build_command: Optional[str] = None
     bin_path: Optional[str] = None
+    only: bool = False
 
     @classmethod
     def from_dict(cls, data: Dict) -> "Package":
@@ -35,4 +36,5 @@ class Package:
             build_env=data.get("build_env"),
             build_command=data.get("build_command"),
             bin_path=data.get("bin_path"),
+            only=data.get("only", False),
         )
