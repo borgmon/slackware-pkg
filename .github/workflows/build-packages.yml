@@ -118,10 +118,11 @@ jobs:
 
       - name: Commit and push to build branch
         run: |
-          bash scripts/commit_and_push_build.sh "${{ github.sha }}"
+          bash scripts/git_commit_and_push.sh slackware64-current/ "Update packages from ${{ github.sha }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update and commit README.md <packages> section
         run: |
+          git checkout -f main
           bash scripts/update_readme_packages.sh "${{ github.sha }}" && \
           bash scripts/git_commit_and_push.sh README.md "Update README.md package list from ${{ github.sha }}"
