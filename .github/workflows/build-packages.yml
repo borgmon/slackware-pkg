@@ -28,12 +28,12 @@ jobs:
           echo "$PACKAGES" | jq -r '.[] | "\(.name) v\(.version)-\(.build) (\(.build_env))"'
 
   build:
-    name: Build ${{ matrix.package.name }}
+    name: Build ${{ matrix.package.name }}-${{ matrix.package.version }}-${{ matrix.package.build }}
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ needs.prepare.outputs.matrix }}
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
 
     steps:
       - name: Checkout code
