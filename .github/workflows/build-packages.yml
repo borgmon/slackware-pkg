@@ -22,7 +22,7 @@ jobs:
         id: set-matrix
         run: |
           # Extract enabled packages with version info from config.json
-          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | {name: .name, version: (.tag | match("^v(?<v>[0-9].*)").v // .tag), build: .build, build_env: .build_env}]' config.json)
+          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | {name: .name, version: (.tag | sub("^v"; "")), build: .build, build_env: .build_env}]' config.json)
           echo "matrix={\"package\":$PACKAGES}" >> $GITHUB_OUTPUT
           echo "Found packages to build:"
           echo "$PACKAGES" | jq -r '.[] | "\(.name) v\(.version)-\(.build) (\(.build_env))"'
