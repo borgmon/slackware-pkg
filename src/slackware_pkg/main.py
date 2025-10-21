@@ -29,6 +29,12 @@ def parse_args():
         help="Package name to build (if not specified, builds all enabled packages)",
     )
 
+    parser.add_argument(
+        "--tag",
+        type=str,
+        help="Override the tag/version for the package (default: use config value)",
+    )
+
     # Output configuration
     parser.add_argument(
         "--output",
@@ -83,6 +89,11 @@ def main():
             print(f"✗ Error: Package '{args.package}' not found in {args.config}")
             sys.exit(1)
 
+        # If --tag is provided, override the tag and version
+        if args.tag:
+            pkg.tag = args.tag
+            pkg.version = pkg._derive_version_from_tag(args.tag)
+
         # Create builder
         builder = SlackwarePackageBuilder(
             config_file=args.config,
@@ -92,7 +103,7 @@ def main():
 
         # Build the single package
         print(f"\n{'=' * 60}")
-        print(f"Building package: {args.package}")
+        print(f"Building package: {args.package} (tag: {pkg.tag})")
         print(f"{'=' * 60}\n")
 
         success = builder.build_single_package_direct(pkg)

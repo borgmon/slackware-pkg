@@ -80,6 +80,7 @@ uv run slackware-pkg --help
 - `--package PACKAGE` - Package name to build (if not specified, builds all enabled packages)
 - `--output OUTPUT` - Output directory for built packages (default: ./build)
 - `--temp TEMP` - Temporary directory for build files (default: ./tmp)
+- `--tag TAG` - Override the tag/version for the package (default: use config value)
 
 ### Configuration
 

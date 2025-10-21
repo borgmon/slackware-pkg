@@ -5,7 +5,6 @@ from typing import Dict, Optional
 
 
 @dataclass
-
 class Package:
     """Package definition"""
 

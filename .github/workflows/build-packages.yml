@@ -22,7 +22,7 @@ jobs:
         id: set-matrix
         run: |
           # Extract enabled packages with version info from config.json
-          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | {name: .name, version: (.tag | sub("^v"; "")), build: .build, build_env: .build_env}]' config.json)
+          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | {name: .name, tag: .tag, version: (.tag | sub("^v"; "")), build: .build, build_env: .build_env}]' config.json)
           echo "matrix={\"package\":$PACKAGES}" >> $GITHUB_OUTPUT
           echo "Found packages to build:"
           echo "$PACKAGES" | jq -r '.[] | "\(.name) v\(.version)-\(.build) (\(.build_env))"'
@@ -65,7 +65,7 @@ jobs:
       - name: Build package
         if: steps.check-existing.outputs.skip != 'true'
         run: |
-          uv run slackware-pkg --config config.json --package "${{ matrix.package.name }}" --output ./
+          uv run slackware-pkg --config config.json --package "${{ matrix.package.name }}" --tag "${{ matrix.package.tag }}" --output ./
 
       - name: Verify build output
         if: steps.check-existing.outputs.skip != 'true'
