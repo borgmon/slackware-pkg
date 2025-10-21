@@ -3,11 +3,12 @@ bd175c84e61ce0bc7e35aafee1c54142  ./zoxide/zoxide-0.9.8-x86_64-1.tgz
 510939ce839e5130dd1284e7cb0c87fc  ./fd/fd-10.3.0-x86_64-1.tgz
 18b74cf587c10c008bbee49b495daca1  ./lsd/lsd-1.2.0-x86_64-1.tgz
 7a302894bae75c49550842ba38126a57  ./lazygit/lazygit-0.55.1-x86_64-1.tgz
-afd0dda4aea03b7e6fb3ded929a1b323  ./FILE_LIST
-ad17df4241f97fd707308f62a09bc435  ./CHECKSUMS.md5
+542ced1be259bf2d307766eb75efb210  ./FILE_LIST
+7d36c77a734a2a5989a035155fd8e800  ./CHECKSUMS.md5
 961db7aded6a415d54d16af679d4fff4  ./dust/dust-1.2.3-x86_64-1.tgz
 0a033cb766c4fd1c1b14aabb4101fcbe  ./starship/starship-1.23.0-x86_64-1.tgz
 39a389534cbdafb40419e89c97c6b888  ./lazydocker/lazydocker-0.24.1-x86_64-1.tgz
+57b6ef09a77ea48bb589e3c17b56eefa  ./lazydocker/lazydocker-0.24.0-x86_64-1.tgz
 f6565614475ceafe8d0b2632ad331235  ./yazi/yazi-25.5.31-x86_64-1.tgz
 51e19f18fec4300ba31ef822fc9c67bd  ./buildlist.sh
 59fc401450f41024b70f67506e099b40  ./ripgrep/ripgrep-14.1.1-x86_64-1.tgz
