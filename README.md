@@ -6,6 +6,20 @@ A Python tool to build packages from source into Slackware package format (.tgz)
 
 <packages>
 
+| Package | Tags |
+|---|---|
+| dust | 1.2.3 |
+| fd | 10.3.0 |
+| lazydocker | 0.24.1 |
+| lazygit | 0.55.1 |
+| lsd | 1.2.0 |
+| micro | 2.0.14 |
+| resvg | 0.45.1 |
+| ripgrep | 14.1.1 |
+| starship | 1.23.0 |
+| yazi | 25.5.31 |
+| zoxide | 0.9.8 |
+
 </packages>
 
 ## Features
