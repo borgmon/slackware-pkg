@@ -6,18 +6,6 @@ A Python tool to build packages from source into Slackware package format (.tgz)
 
 <packages>
 
-- ripgrep: v14.1.1
-- yazi: v25.5.31
-- lsd: v1.2.0
-- fd: v10.3.0
-- zoxide: v0.9.8
-- resvg: v0.45.1
-- micro: v2.0.14
-- dust: v1.2.3
-- starship: v1.23.0
-- lazydocker: v0.24.1
-- lazygit: v0.55.1
-
 </packages>
 
 ## Features
@@ -101,8 +89,7 @@ Edit `config.json` to define packages to build. To add a new package, simply add
 
 - **name** (required): Package name
 - **git_url** (required): Git repository URL
-- **branch** (required): Git branch/tag to checkout (used only for git clone operations)
-- **version** (required): Package version (used for package naming and documentation paths)
+- **tag** (required): Git tag or branch to checkout (used for git clone and release download)
 - **description** (required): Package description
 - **build** (optional, default: 1): Build number
 - **enabled** (optional, default: true): Set to `false` to skip building this package
@@ -118,8 +105,7 @@ To add a new package, simply add an entry to `config.json`:
 {
   "name": "your-package",
   "git_url": "https://github.com/user/repo.git",
-  "branch": "v1.0.0",
-  "version": "1.0.0",
+  "tag": "v1.0.0",
   "description": "Package description",
   "build": 1,
   "enabled": true,
@@ -128,6 +114,9 @@ To add a new package, simply add an entry to `config.json`:
   "bin_path": "target/release/your-package"
 }
 ```
+
+**Version Derivation:**
+If the tag starts with `v` (e.g., `v1.2.3`), the version will be the numeric part after `v` (e.g., `1.2.3`). Otherwise, the tag itself is used as the version.
 
 The builder is fully generic and uses the `build_command` you specify. No code changes needed!
 

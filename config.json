@@ -5,8 +5,7 @@
     {
       "name": "ripgrep",
       "git_url": "https://github.com/BurntSushi/ripgrep.git",
-      "branch": "14.1.1",
-      "version": "14.1.1",
+      "tag": "14.1.1",
       "description": "ripgrep recursively searches directories for a regex pattern while respecting your gitignore.",
       "build": 1,
       "enabled": true,
@@ -17,8 +16,7 @@
     {
       "name": "yazi",
       "git_url": "https://github.com/sxyazi/yazi.git",
-      "branch": "v25.5.31",
-      "version": "25.5.31",
+      "tag": "v25.5.31",
       "description": "Blazing fast terminal file manager written in Rust, based on async I/O.",
       "build": 1,
       "enabled": true,
@@ -29,8 +27,7 @@
     {
       "name": "lsd",
       "git_url": "https://github.com/lsd-rs/lsd.git",
-      "branch": "v1.2.0",
-      "version": "1.2.0",
+      "tag": "v1.2.0",
       "description": "The next gen ls command.",
       "build": 1,
       "enabled": true,
@@ -41,8 +38,7 @@
     {
       "name": "fd",
       "git_url": "https://github.com/sharkdp/fd.git",
-      "branch": "v10.3.0",
-      "version": "10.3.0",
+      "tag": "v10.3.0",
       "description": "A simple, fast and user-friendly alternative to 'find'.",
       "build": 1,
       "enabled": true,
@@ -53,8 +49,7 @@
     {
       "name": "zoxide",
       "git_url": "https://github.com/ajeetdsouza/zoxide.git",
-      "branch": "v0.9.8",
-      "version": "0.9.8",
+      "tag": "v0.9.8",
       "description": "A smarter cd command. Supports all major shells.",
       "build": 1,
       "enabled": true,
@@ -65,8 +60,7 @@
     {
       "name": "resvg",
       "git_url": "https://github.com/linebender/resvg.git",
-      "branch": "v0.45.1",
-      "version": "0.45.1",
+      "tag": "v0.45.1",
       "description": "An SVG rendering library.",
       "build": 1,
       "enabled": true,
@@ -77,8 +71,7 @@
     {
       "name": "micro",
       "git_url": "https://github.com/zyedidia/micro.git",
-      "branch": "v2.0.14",
-      "version": "2.0.14",
+      "tag": "v2.0.14",
       "description": "A modern and intuitive terminal-based text editor.",
       "build": 1,
       "enabled": true,
@@ -89,8 +82,7 @@
     {
       "name": "dust",
       "git_url": "https://github.com/bootandy/dust.git",
-      "branch": "v1.2.3",
-      "version": "1.2.3",
+      "tag": "v1.2.3",
       "description": "A more intuitive version of du in rust.",
       "build": 1,
       "enabled": true,
@@ -101,8 +93,7 @@
     {
       "name": "starship",
       "git_url": "https://github.com/starship/starship.git",
-      "branch": "v1.23.0",
-      "version": "1.23.0",
+      "tag": "v1.23.0",
       "description": "The minimal, blazing-fast, and infinitely customizable prompt for any shell!",
       "build": 1,
       "enabled": true,
@@ -113,8 +104,18 @@
     {
       "name": "lazydocker",
       "git_url": "https://github.com/jesseduffield/lazydocker.git",
-      "branch": "v0.24.1",
-      "version": "0.24.1",
+      "tag": "v0.24.1",
+      "description": "The lazier way to manage everything docker.",
+      "build": 1,
+      "enabled": true,
+      "build_env": "go",
+      "build_command": "CGO_ENABLED=0 GOOS=linux go build",
+      "bin_path": "lazydocker"
+    },
+    {
+      "name": "lazydocker",
+      "git_url": "https://github.com/jesseduffield/lazydocker.git",
+      "tag": "v0.24.0",
       "description": "The lazier way to manage everything docker.",
       "build": 1,
       "enabled": true,
@@ -125,8 +126,7 @@
     {
       "name": "lazygit",
       "git_url": "https://github.com/jesseduffield/lazygit.git",
-      "branch": "v0.55.1",
-      "version": "0.55.1",
+      "tag": "v0.55.1",
       "description": "simple terminal UI for git commands.",
       "build": 1,
       "enabled": true,

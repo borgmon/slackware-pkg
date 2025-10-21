@@ -85,7 +85,7 @@ def main():
 
         # Create builder
         builder = SlackwarePackageBuilder(
-            config_file=None,
+            config_file=args.config,
             build_root=args.output,
             tmp_root=args.temp,
         )

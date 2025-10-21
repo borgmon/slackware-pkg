@@ -12,16 +12,13 @@ class ReleaseDownloader:
 
     @staticmethod
     def construct_release_url(pkg: Package) -> str:
-        """Construct the release URL from git_url, branch, and name"""
-        # Extract owner and repo from git_url
-        # Example: https://github.com/zyedidia/micro.git -> zyedidia/micro
+        """Construct the release URL from git_url, tag, and name"""
         git_url = pkg.git_url.rstrip("/")
         if git_url.endswith(".git"):
             git_url = git_url[:-4]
 
-        # Construct download URL
-        # Format: https://github.com/{owner}/{repo}/releases/download/{version}/{name}-{version}-linux64.tgz
-        release_url = f"{git_url}/releases/download/{pkg.branch}/{pkg.name}-{pkg.version}-linux64.tgz"
+        # Use tag for the release asset, version for filename
+        release_url = f"{git_url}/releases/download/{pkg.tag}/{pkg.name}-{pkg.version}-linux64.tgz"
         return release_url
 
     @staticmethod

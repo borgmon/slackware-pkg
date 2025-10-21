@@ -1,5 +1,26 @@
 #!/bin/bash
-PACKAGES=$(jq -r '.packages[] | select(.enabled == true) | "- "+.name+": v"+.version' config.json)
+# Group enabled packages by name and merge tags for each, output as markdown table
+PACKAGES=$(jq -r '
+  [.packages[] | select(.enabled == true)]
+  | sort_by(.name)
+  | group_by(.name)
+  | [
+      "| Package | Tags |",
+      "|---|---|"
+    ] +
+    (map(
+      "| " + .[0].name + " | " + (
+        map(
+          if .tag | test("^v[0-9]") then
+            (.tag | sub("^v"; ""))
+          else
+            .tag
+          end
+        ) | join(", ")
+      ) + " |"
+    ))
+    | join("\n")
+' config.json)
 awk -v pkgs="$PACKAGES" '
   BEGIN { in_section=0 }
   /<packages>/ { print; print ""; print pkgs; print ""; in_section=1; next }

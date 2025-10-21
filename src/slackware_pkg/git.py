@@ -12,13 +12,13 @@ class GitRepository:
 
     @staticmethod
     def clone_or_update(pkg: Package, work_dir: Path) -> Optional[Path]:
-        """Clone the git repository and checkout specified branch"""
+        """Clone the git repository and checkout specified tag"""
         repo_name = pkg.name
         git_url = pkg.git_url
-        branch = pkg.branch
+        tag = pkg.tag
         repo_path = work_dir / repo_name
 
-        print(f"  → Cloning {git_url} (branch: {branch})")
+        print(f"  → Cloning {git_url} (branch: {tag})")
 
         try:
             # Clone the repository
@@ -27,7 +27,7 @@ class GitRepository:
                     "git",
                     "clone",
                     "--branch",
-                    branch,
+                    tag,
                     "--depth",
                     "1",
                     git_url,
