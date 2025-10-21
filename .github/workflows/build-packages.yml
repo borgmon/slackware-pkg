@@ -94,6 +94,10 @@ jobs:
           git fetch origin build:build 2>/dev/null || git checkout --orphan build
           git checkout build
 
+      - name: Copy scripts/ from main branch
+        run: |
+          git checkout main -- scripts/
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
