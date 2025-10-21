@@ -21,11 +21,7 @@ jobs:
       - name: Parse config.json and create matrix
         id: set-matrix
         run: |
-          # Extract enabled packages with version info from config.json
-          PACKAGES=$(jq -c '[.packages[] | select(.enabled == true) | {name: .name, version: .version, build: .build, build_env: .build_env}]' config.json)
-          echo "matrix={\"package\":$PACKAGES}" >> $GITHUB_OUTPUT
-          echo "Found packages to build:"
-          echo "$PACKAGES" | jq -r '.[] | "\(.name) v\(.version)-\(.build) (\(.build_env))"'
+          bash scripts/prepare_build_matrix.sh "$GITHUB_OUTPUT"
 
   build:
     name: Build ${{ matrix.package.name }}
@@ -44,19 +40,7 @@ jobs:
       - name: Check if version already built
         id: check-existing
         run: |
-          # Fetch the build branch to check for existing packages
-          git fetch origin build:build 2>/dev/null || echo "Build branch does not exist yet"
-
-          # Check if the package file already exists in the build branch
-          PACKAGE_FILE="${{ matrix.package.name }}-${{ matrix.package.version }}-x86_64-${{ matrix.package.build }}.tgz"
-
-          if git ls-tree -r build --name-only 2>/dev/null | grep -q "slackware64-current/${{ matrix.package.name }}/$PACKAGE_FILE"; then
-            echo "skip=true" >> $GITHUB_OUTPUT
-            echo "✓ Package $PACKAGE_FILE already exists in build branch - skipping build"
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-            echo "→ Package $PACKAGE_FILE not found - will build"
-          fi
+          bash scripts/check_existing_package.sh "${{ matrix.package.name }}" "${{ matrix.package.version }}" "${{ matrix.package.build }}" "$GITHUB_OUTPUT"
 
       - name: Install uv
         if: steps.check-existing.outputs.skip != 'true'
@@ -118,49 +102,18 @@ jobs:
 
       - name: Copy packages to slackware64-current
         run: |
-          echo "Copying packages from artifacts..."
-          mkdir -p slackware64-current
-
-          # Copy all packages from artifacts
-          if [ -d artifacts ]; then
-            for pkg_dir in artifacts/package-*; do
-              if [ -d "$pkg_dir" ]; then
-                pkg_name=$(basename "$pkg_dir" | sed 's/^package-//')
-                echo "Copying $pkg_name..."
-                mkdir -p "slackware64-current/$pkg_name"
-                cp -r "$pkg_dir"/* "slackware64-current/$pkg_name/"
-              fi
-            done
-          fi
-
-          echo "Package directory structure:"
-          ls -lR slackware64-current/
+          bash scripts/copy_packages_to_slackware.sh
 
       - name: Run buildlist.sh
         run: |
-          # Copy buildlist.sh to slackware64-current directory
-          cp buildlist.sh slackware64-current/
-
-          # Run buildlist.sh from within slackware64-current
-          cd slackware64-current
-          chmod +x buildlist.sh
-          ./buildlist.sh .
+          bash scripts/run_buildlist.sh
 
       - name: Commit and push to build branch
         run: |
-          # Configure git
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Add all changes (FILE_LIST and CHECKSUMS.md5 are now inside slackware64-current/)
-          git add slackware64-current/
-
-          # Commit with summary
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Update packages from ${{ github.sha }}"
-            git push origin build
-          fi
+          bash scripts/commit_and_push_build.sh "${{ github.sha }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update and commit README.md <packages> section
+        run: |
+          bash scripts/update_readme_packages.sh "${{ github.sha }}" && \
+          bash scripts/git_commit_and_push.sh README.md "Update README.md package list from ${{ github.sha }}"

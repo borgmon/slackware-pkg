@@ -2,6 +2,24 @@
 
 A Python tool to build packages from source into Slackware package format (.tgz).
 
+## Packages included
+
+<packages>
+
+- ripgrep: v14.1.1
+- yazi: v25.5.31
+- lsd: v1.2.0
+- fd: v10.3.0
+- zoxide: v0.9.8
+- resvg: v0.45.1
+- micro: v2.0.14
+- dust: v1.2.3
+- starship: v1.23.0
+- lazydocker: v0.24.1
+- lazygit: v0.55.1
+
+</packages>
+
 ## Features
 
 - Build packages from source Git repositories
