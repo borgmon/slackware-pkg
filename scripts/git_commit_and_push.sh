@@ -11,5 +11,5 @@ if git diff --cached --quiet; then
   echo "No changes to commit for $FILE_TO_ADD"
 else
   git commit -m "$COMMIT_MSG"
-  git push origin build
+  git push origin
 fi

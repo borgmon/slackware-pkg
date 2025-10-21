@@ -28,7 +28,7 @@ jobs:
           echo "$PACKAGES" | jq -r '.[] | "\(.name) v\(.version)-\(.build) (\(.build_env))"'
 
   build:
-    name: Build ${{ matrix.package.name }}-${{ matrix.package.version }}-${{ matrix.package.build }}
+    name: Build ${{ matrix.package.name }}-${{ matrix.package.version }}
     needs: prepare
     runs-on: ubuntu-latest
     strategy:

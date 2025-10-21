@@ -113,17 +113,6 @@
       "bin_path": "lazydocker"
     },
     {
-      "name": "lazydocker",
-      "git_url": "https://github.com/jesseduffield/lazydocker.git",
-      "tag": "v0.24.0",
-      "description": "The lazier way to manage everything docker.",
-      "build": 1,
-      "enabled": true,
-      "build_env": "go",
-      "build_command": "CGO_ENABLED=0 GOOS=linux go build",
-      "bin_path": "lazydocker"
-    },
-    {
       "name": "lazygit",
       "git_url": "https://github.com/jesseduffield/lazygit.git",
       "tag": "v0.55.1",
