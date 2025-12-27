@@ -18,6 +18,7 @@ A Python tool to build packages from source into Slackware package format (.tgz)
 | ripgrep | 14.1.1 |
 | starship | 1.23.0 |
 | yazi | 25.5.31 |
+| yq | 4.50.1 |
 | zoxide | 0.9.8 |
 
 </packages>
