@@ -122,6 +122,17 @@
       "build_env": "go",
       "build_command": "CGO_ENABLED=0 GOOS=linux go build",
       "bin_path": "lazygit"
+    },
+    {
+      "name": "yq",
+      "git_url": "https://github.com/mikefarah/yq.git",
+      "tag": "v4.50.1",
+      "description": "yq is a portable command-line YAML, JSON, XML, CSV, TOML, HCL and properties processor.",
+      "build": 1,
+      "enabled": true,
+      "build_env": "go",
+      "build_command": "CGO_ENABLED=0 GOOS=linux go build",
+      "bin_path": "yq"
     }
   ]
 }
