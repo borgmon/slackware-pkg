@@ -1,10 +1,11 @@
 e7ec4cabfac1a8ed7d3b4fcbdff76d93  ./micro/micro-2.0.14-x86_64-1.tgz
 bd175c84e61ce0bc7e35aafee1c54142  ./zoxide/zoxide-0.9.8-x86_64-1.tgz
 510939ce839e5130dd1284e7cb0c87fc  ./fd/fd-10.3.0-x86_64-1.tgz
+1c50005ef604daed9b115604512d4f04  ./yq/yq-4.50.1-x86_64-1.tgz
 18b74cf587c10c008bbee49b495daca1  ./lsd/lsd-1.2.0-x86_64-1.tgz
 7a302894bae75c49550842ba38126a57  ./lazygit/lazygit-0.55.1-x86_64-1.tgz
-dda4a138c73f0bc474d4c6991b51a5b9  ./FILE_LIST
-5c18d1e001aa2d858a94783bb93e9499  ./CHECKSUMS.md5
+3bd34dafdc0719b9c3cbbffc280773eb  ./FILE_LIST
+c4f86da6c79ee38fee004ce7f3f30d99  ./CHECKSUMS.md5
 961db7aded6a415d54d16af679d4fff4  ./dust/dust-1.2.3-x86_64-1.tgz
 0a033cb766c4fd1c1b14aabb4101fcbe  ./starship/starship-1.23.0-x86_64-1.tgz
 39a389534cbdafb40419e89c97c6b888  ./lazydocker/lazydocker-0.24.1-x86_64-1.tgz
