@@ -8,18 +8,18 @@ A Python tool to build packages from source into Slackware package format (.tgz)
 
 | Package | Tags |
 |---|---|
-| dust | 1.2.3 |
-| fd | 10.3.0 |
-| lazydocker | 0.24.1 |
-| lazygit | 0.55.1 |
+| dust | 1.2.6 |
+| fd | 10.5.0 |
+| lazydocker | 0.25.2 |
+| lazygit | 0.66.2 |
 | lsd | 1.2.0 |
-| micro | 2.0.14 |
-| resvg | 0.45.1 |
-| ripgrep | 14.1.1 |
-| starship | 1.23.0 |
-| yazi | 25.5.31 |
-| yq | 4.50.1 |
-| zoxide | 0.9.8 |
+| micro | 2.0.15 |
+| resvg | 0.49.0 |
+| ripgrep | 15.2.0 |
+| starship | 1.27.0 |
+| yazi | 26.9.1 |
+| yq | 4.54.1 |
+| zoxide | 0.10.0 |
 
 </packages>
 
